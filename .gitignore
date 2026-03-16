@@ -160,3 +160,9 @@ cython_debug/
 #.idea/
 
 .DS_Store
+
+# Project-specific
+venv/
+data/logs/
+train_model/test_data/
+train_model/training_data/

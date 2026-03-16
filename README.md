@@ -46,7 +46,7 @@ To get started with "STRIKE A POSE!", follow these steps:
 
 1. **Clone this Git repository** to your local machine and navigate into the project directory:
    ```bash
-   git clone https://github.com/stuart/STRIKEPOSE_GAME.git
+   git clone https://github.com/Cooleststar/STRIKEPOSE_GAME.git
    cd STRIKEPOSE_GAME
    ```
 
