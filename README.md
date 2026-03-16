@@ -44,7 +44,7 @@ The project features a sleek, easy-to-use web interface running via a Flask back
 
 To get started with "STRIKE A POSE!", follow these steps:
 
-1. **Clone this Git repository** to your local machine and navigate into the project directory:
+1. **Clone this Git repository** to your current directory:
    ```bash
    git clone https://github.com/Cooleststar/STRIKEPOSE_GAME.git
    cd STRIKEPOSE_GAME
@@ -52,8 +52,8 @@ To get started with "STRIKE A POSE!", follow these steps:
 
 2. **Create and activate a virtual environment** for better isolation of dependencies:
     ```bash
-    python3 -m venv strike_a_pose_env
-    source strike_a_pose_env/bin/activate
+    python3 -m venv venv
+    source venv/bin/activate
     ```
 
 3. **Install the game-specific Python packages:**    
@@ -83,7 +83,7 @@ To get started with "STRIKE A POSE!", follow these steps:
     To play again later (after running step 5), navigate back to the game directory and re-activate the environment:   
     
     ```bash
-    source strike_a_pose_env/bin/activate
+    source venv/bin/activate
     python play.py
     ```
 
