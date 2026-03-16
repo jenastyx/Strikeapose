@@ -12,7 +12,7 @@ The project features a sleek, easy-to-use web interface running via a Flask back
 
 - The game takes around **∼2.4 GB disk space** due to the encapsulated virtual environment the game is running in, but can be easily deleted completely.
   
-- Make sure that **Python 3** and **Git** are installed on your system.
+- Make sure that **Python 3**, **Git**, and **FFmpeg** are installed on your system.
  
      1. **Check Installation Status**    
         Run these commands to verify the packages are available:
@@ -20,6 +20,7 @@ The project features a sleek, easy-to-use web interface running via a Flask back
         ```bash
         git --version
         python3 --version
+        ffmpeg -version
         ```
 
    2. **Installation Instructions**    
@@ -28,7 +29,7 @@ The project features a sleek, easy-to-use web interface running via a Flask back
         - **Ubuntu/Debian**
         ```bash
         sudo apt update	
-        sudo apt install git python3 python3-venv	
+        sudo apt install git python3 python3-venv ffmpeg
         ```
 
         - **macOS**   
@@ -36,6 +37,7 @@ The project features a sleek, easy-to-use web interface running via a Flask back
         ```bash
         brew install python
         brew install git
+        brew install ffmpeg
         ```
 
 ---
@@ -53,7 +55,7 @@ To get started with "STRIKE A POSE!", follow these steps:
 2. **Create and activate a virtual environment** for better isolation of dependencies:
     ```bash
     python3 -m venv venv
-    source venv/bin/activate
+    .venv\Scripts\activate
     ```
 
 3. **Install the game-specific Python packages:**    
@@ -83,7 +85,7 @@ To get started with "STRIKE A POSE!", follow these steps:
     To play again later (after running step 5), navigate back to the game directory and re-activate the environment:   
     
     ```bash
-    source venv/bin/activate
+    .venv\Scripts\activate
     python play.py
     ```
 

@@ -14,8 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-# lib/
-# lib64/
+lib64/
 parts/
 sdist/
 var/
@@ -164,5 +163,9 @@ cython_debug/
 # Project-specific
 venv/
 data/logs/
+training_data/
 train_model/test_data/
 train_model/training_data/
+.vscode/
+.idea/
+*.logs
