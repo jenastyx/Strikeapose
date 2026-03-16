@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STRIKE A POSE!</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+    <div class="main-container">
+        <div id="video-container">
+            <img id="video-feed" src="/api/vidFeed" alt="Video Feed" />
+        </div>
+        
+        <div id="control-panel">
+            <h1 class="title">STRIKE A POSE!</h1>
+            
+            <div class="control-group">
+                <label for="camera-select">Camera Source:</label>
+                <select id="camera-select">
+                    <option value="">-- Select Camera --</option>
+                </select>
+            </div>
+            
+            <button id="start-stream-btn">Start Camera</button>
+            <br/><br/>
+            <hr/>
+            <br/>
+            
+            <button id="start-game-btn" class="primary-btn">Start Game</button>
+            <button id="reset-game-btn" class="danger-btn">Reset Game</button>
+            
+            <br/><br/>
+            <a href="/settings" class="settings-link"><button>Settings</button></a>
+            
+            <div id="toast" class="toast"></div>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+# STRIKEPOSE GAME
+**Real-Time Body Pose Classification Web Application**
+
+## Intro 
+**STRIKEPOSE GAME** is an interactive web-based application designed to challenge users with body pose classification minigames. Players follow along with on-screen exercises, including squats, standing poses, and jumps, matching their body movements to the required pose.
+
+The project features a sleek, easy-to-use web interface running via a Flask backend, making the game accessible via any modern browser. It utilizes powerful machine learning tools including MediaPipe and OpenCV to handle real-time video streaming, landmark extraction, and predictive body pose classification.
+
+---
+
+### System Requirements
+
+- The game takes around **∼2.4 GB disk space** due to the encapsulated virtual environment the game is running in, but can be easily deleted completely.
+  
+- Make sure that **Python 3** and **Git** are installed on your system.
+ 
+     1. **Check Installation Status**    
+        Run these commands to verify the packages are available:
+        
+        ```bash
+        git --version
+        python3 --version
+        ```
+
+   2. **Installation Instructions**    
+      If any check failed, run the commands below to install them:
+ 
+        - **Ubuntu/Debian**
+        ```bash
+        sudo apt update	
+        sudo apt install git python3 python3-venv	
+        ```
+
+        - **macOS**   
+       The easiest way is via Homebrew (brew), a powerful package manager. Installation guide: [https://brew.sh/](https://brew.sh/)
+        ```bash
+        brew install python
+        brew install git
+        ```
+
+---
+
+### Installation / Deinstallation
+
+To get started with "STRIKE A POSE!", follow these steps:
+
+1. **Clone this Git repository** to your local machine and navigate into the project directory:
+   ```bash
+   git clone https://github.com/stuart/STRIKEPOSE_GAME.git
+   cd STRIKEPOSE_GAME
+   ```
+
+2. **Create and activate a virtual environment** for better isolation of dependencies:
+    ```bash
+    python3 -m venv strike_a_pose_env
+    source strike_a_pose_env/bin/activate
+    ```
+
+3. **Install the game-specific Python packages:**    
+    ```bash
+    pip install --upgrade pip
+    pip install --no-cache-dir -r requirements.txt
+    ```
+
+4.  **Run the Game!**    
+    Start the game server, and open your browser to `http://localhost:1336`. For controls, check the [How to Play](#how-to-play) section below.
+    ```bash
+    python play.py
+    ```
+
+    **Note:** This might take 2–3 minutes when executing for the first time. The delay is due to the program loading the large, pre-trained pose detection model into RAM.
+
+**Post-Game Commands**
+
+5.  **Exit the environment**     
+    When you are done playing, but want to keep the game installed for later:
+    
+    ```bash
+    deactivate
+    ```
+
+6.  **Re-run the Game**     
+    To play again later (after running step 5), navigate back to the game directory and re-activate the environment:   
+    
+    ```bash
+    source strike_a_pose_env/bin/activate
+    python play.py
+    ```
+
+7.  **Deinstallation**    
+    To completely remove the game, its environment, and free up disk space, run this command block while you are inside the game directory (or simply delete the folder `STRIKEPOSE_GAME`):
+        
+    ```bash
+    deactivate 2>/dev/null
+    cd ..
+    rm -rf STRIKEPOSE_GAME
+    ``` 
+
+---
+
+### How to Play
+To play "STRIKE A POSE!", follow these steps:
+
+1. Open a terminal and ensure your virtual environment is active (Step 6 above).
+
+2. Start the game server: `python play.py`.
+
+3. Open your web browser and navigate to `http://localhost:1336`.
+   
+4. Controls:
+   - Use the web interface to select your camera and start the video feed.
+   - Adjust your position and camera angle to fit the **green square**.
+   - Use the **Settings** menu to adjust the number of rounds and the countdown time.
+   - Click the **Start Game** button to begin the challenge!
+
+---
+
+### Make it Yours!
+
+Adjust the game to your needs! 💪     
+Please take a look at the documentation in `collect_data.py`, `train_model.ipynb`, and `play.py` for details.
+- **`collect_data.py`**: Collect training data of poses of your choice.
+- **`train_model.ipynb`**: Train a new model to detect new poses and evaluate the model's performance. Explore and experiment with different model architectures!
+- **`play.py`**: Adjust the model, poses, and respective sound files here to start your customized Pose Game!
+
+#### Example: Adding New Poses ("Dab" and "Jump")
+
+1. **Collect Data for New Poses (`collect_data.py`)**      
+    Since the data for the existing poses is already collected, you only need to run the data collection script for the new poses (dab and jump). The new data will be appended to the existing dataset. First, adjust the data collection script to define and record the new poses.
+
+   - **Edit `collect_data.py`**      
+     Open `collect_data.py` and modify the `POSES` list to include only the new poses you need to record.
+     
+     ```python
+     POSES = ["dab", "jump"]
+     ```
+
+   - **Run the Collection Script**      
+     Run the updated script and perform the **Dab** and **Jump** poses when prompted.
+     
+     ```python
+     python collect_data.py
+     ```
+
+2. **Train the New Model (`train_model.ipynb`)**        
+    Now you update the training script to recognize the full set of your final poses and retrain the model.
+
+     -  **Update the Pose List in the Notebook**  
+     Open `train_model.ipynb`. In the section that defines the model labels, ensure the list includes ALL seven final poses (old and new):     
+     
+          ```python
+          POSES_ALL = ["stand", "squat", "X", "empty", "other", "dab", "jump"]
+        
+          # The create_label_mapping function will sort them and assign codes.
+          # Example final LABEL_MAP (due to alphabetical sorting):
+          # {'X': 0, 'dab': 1, 'empty': 2, 'jump': 3, 'other': 4, 'squat': 5, 'stand': 6}
+          ```
+
+   - **Execute Training**       
+     Execute every cell in the notebook sequentially (`Run All`). The model will load all collected data, train on the combined 7 classes, and save the new model file.
+     
+        ```python
+        python collect_data.py
+        ```
+3. **Integrate and Play (`play.py`)**     
+    Finally, update the game script to use the exact 7-class structure defined by the trained model.
+
+   -  **Edit `play.py`**  
+     Open `play.py` and modify the `LABEL_MAP` dictionary in the `PARAMETERS` section to reflect the model's new, complete, alphabetically sorted structure:   
+     
+         ```python
+         # NOTE: This MUST match the full set of poses and the ALPHABETICAL ordering used during model training!
+         LABEL_MAP = {"X": 0, "Dab": 1, "Hide": 2, "Jump": 3, "Pose": 4, "Squat": 5, "Stand": 6}
+         ```
+
+    -  **Run the Game**    
+     You can now run the game using your new model and seven-pose set:
+     
+          ```bash
+          python play.py
+          ```
+
+---
+
+### Acknowledgments
+
+I would like to thank Daniel Bärenbräuer for his outstanding project ["Live Sign Language Translator"](https://github.com/d-db/SPICED_Final_Project_Live_Sign_Language_Translator__LSTM_Neural_Network),  which served as a valuable source of inspiration for "STRIKE A POSE!".
+
+A special thanks to [alx-sch/STRIKE_A_POSE](https://github.com/alx-sch/STRIKE_A_POSE), as this project was heavily inspired by his project.

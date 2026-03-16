@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Settings - STRIKE A POSE!</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+
+<body>
+    <div id="control-panel" style="width: 400px; margin: auto; margin-top: 100px;">
+        <h1 class="title">Settings</h1>
+        <form id="settings-form">
+            <div class="control-group">
+                <label>Number of Rounds:</label>
+                <input type="number" name="rounds" value="{{ rounds }}" min="1" required
+                    style="padding:10px; border-radius:6px; background:#444; color:#fff; border:none;">
+            </div>
+
+            <div class="control-group" style="margin-top: 15px;">
+                <label>Countdown Time (secs):</label>
+                <input type="number" name="countdown" value="{{ countdown }}" min="1" required
+                    style="padding:10px; border-radius:6px; background:#444; color:#fff; border:none;">
+            </div>
+
+            <br />
+            <button type="submit" class="primary-btn">Save Settings</button>
+            <a href="/" style="text-decoration: none;"><button type="button" class="danger-btn">Cancel</button></a>
+        </form>
+        <div id="toast" class="toast"></div>
+    </div>
+    <script>
+        document.getElementById('settings-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            fetch('/api/submit_settings', { method: 'POST', body: fd })
+                .then(res => res.json())
+                .then(data => {
+                    const toast = document.getElementById("toast");
+                    toast.textContent = data.message;
+                    toast.className = `toast show is-success`;
+                    setTimeout(() => window.location.href = "/", 1000);
+                }).catch(e => alert("Error saving settings"));
+        });
+    </script>
+</body>
+
+</html>

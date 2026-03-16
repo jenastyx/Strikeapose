@@ -1,0 +1,6 @@
+2026-02-26 14:29:34,916 - INFO - Video Player initialised!
+2026-02-26 14:30:24,593 - INFO - Starting FFmpeg stream from camera:GENERAL WEBCAM
+2026-02-26 14:30:24,593 - INFO - Using DirectShow camera: GENERAL WEBCAM
+2026-02-26 14:30:24,593 - INFO - Stream thread started. Thread alive: True
+2026-02-26 14:30:24,600 - INFO - FFmpeg process started
+2026-02-26 14:30:26,938 - INFO - Successfully processed first RGB frame from FFmpeg stream
