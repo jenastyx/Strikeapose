@@ -97,39 +97,63 @@ def initialize_pose_model(
     )
 
 
-def process_frame(frame, pose):
+def process_frame(frame, pose, show_landmarks=False, show_bbox=True):
     """
     Processes frame from videostream using the specified MediaPipe Pose model.
+    Optionally draws pose landmarks and/or a green bounding box around the detected person.
 
     Args:
         frame (numpy.ndarray): The input frame in BGR format.
         pose (mediapipe.solutions.pose.Pose): Initialized Pose model.
+        show_landmarks (bool): Whether to draw pose landmarks and connections.
+        show_bbox (bool): Whether to draw a green bounding box around the detected person.
 
     Returns:
         Tuple[Any, numpy.ndarray]: A tuple containing
-            [0]: the results from pose processing used for further processing in function 'extract_landmarks';
-            [1]: the annotated frame (landmarks and landmark conections shown in videostream)
+            [0]: the results from pose processing;
+            [1]: the annotated frame.
     """
 
     # Convert the frame from BGR to RGB color space as required by the Pose model.
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    results = pose.process(frame)
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = pose.process(frame_rgb)
 
-    # Convert frame back to BGR color scheme.
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    if results.pose_landmarks:
+        # Draw landmarks (blue lines + white dots) if enabled
+        if show_landmarks:
+            mp_drawing.draw_landmarks(
+                frame,
+                results.pose_landmarks,
+                mp_pose.POSE_CONNECTIONS,
+                landmark_drawing_spec=mp_drawing.DrawingSpec(
+                    color=(255, 255, 255), thickness=4, circle_radius=5
+                ),
+                connection_drawing_spec=mp_drawing.DrawingSpec(
+                    color=(255, 0, 0), thickness=15, circle_radius=5
+                ),
+            )
 
-    # Draw landmark and landmark connections on frame using given parameters for color/style (can be adjusted)
-    mp_drawing.draw_landmarks(
-        frame,
-        results.pose_landmarks,
-        mp_pose.POSE_CONNECTIONS,
-        landmark_drawing_spec=mp_drawing.DrawingSpec(
-            color=(255, 255, 255), thickness=4, circle_radius=5  # white
-        ),
-        connection_drawing_spec=mp_drawing.DrawingSpec(
-            color=(255, 0, 0), thickness=15, circle_radius=5  # blue
-        ),
-    )
+        # Draw green bounding box if enabled
+        if show_bbox:
+            h, w = frame.shape[:2]
+            landmarks = results.pose_landmarks.landmark
+
+            x_coords = []
+            y_coords = []
+            for lm in landmarks:
+                if lm.visibility > 0.5:
+                    x_coords.append(int(lm.x * w))
+                    y_coords.append(int(lm.y * h))
+
+            if x_coords and y_coords:
+                padding = 30
+                x_min = max(0, min(x_coords) - padding)
+                y_min = max(0, min(y_coords) - padding)
+                x_max = min(w, max(x_coords) + padding)
+                y_max = min(h, max(y_coords) + padding)
+
+                cv2.rectangle(frame, (x_min, y_min), (x_max, y_max), (0, 255, 0), 3)
+
     return results, frame
 
 

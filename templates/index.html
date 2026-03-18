@@ -7,28 +7,64 @@
     <link rel="stylesheet" href="/static/css/app.css">
 </head>
 <body>
+    <div id="top-logos">
+        <img src="/static/images/fusionlogo.png" alt="Fusion Logo">
+        <img src="/static/images/11logo.png" alt="11 Logo">
+    </div>
+    <br><br><br><br><br><br>
     <div class="main-container">
-        <div id="video-container">
-            <img id="video-feed" src="/api/vidFeed" alt="Video Feed" />
+        <div id="video-section">
+            <!-- Fixed-height banner ABOVE the video -->
+            <div id="game-banner">
+                <div id="banner-idle" class="banner-content">
+                    <span id="banner-idle-title" class="banner-title">SELECT CAMERA</span>
+                </div>
+
+                <div id="banner-hud" class="banner-content" style="display: none;">
+                    <span id="hud-rounds-left"></span>
+                    <span id="hud-countdown"></span>
+                    <span id="hud-points"></span>
+                </div>
+
+                <div id="banner-gameover" class="banner-content" style="display: none;">
+                    <span class="banner-title">GAME OVER!</span>
+                    <span id="banner-points" class="banner-points"></span>
+                </div>
+            </div>
+
+            <!-- Video with overlays -->
+            <div id="video-container">
+                <img id="video-feed" src="/api/vidFeed" alt="Video Feed" />
+                <div id="video-dim-overlay" class="video-overlay dim-overlay active"></div>
+                <div id="flash-correct" class="video-overlay flash flash-correct"></div>
+                <div id="flash-incorrect" class="video-overlay flash flash-incorrect"></div>
+            </div>
         </div>
         
         <div id="control-panel">
             <h1 class="title">STRIKE A POSE!</h1>
             
-            <div class="control-group">
+            <!-- Camera select (visible when not streaming) -->
+            <div id="camera-select-group" class="control-group">
                 <label for="camera-select">Camera Source:</label>
                 <select id="camera-select">
                     <option value="">-- Select Camera --</option>
                 </select>
             </div>
+
+            <!-- Camera info (visible when streaming) -->
+            <div id="camera-info-group" class="control-group" style="display: none;">
+                <label>Camera in use:</label>
+                <span id="camera-info" style="color: #00d06c; font-weight: bold; font-size: 1rem;"></span>
+            </div>
             
-            <button id="start-stream-btn">Start Camera</button>
+            <button id="start-stream-btn" class="primary-btn">Start Camera</button>
             <br/><br/>
             <hr/>
             <br/>
             
             <button id="start-game-btn" class="primary-btn">Start Game</button>
-            <button id="reset-game-btn" class="danger-btn">Reset Game</button>
+            <button id="reset-game-btn" class="danger-btn">Stop Game</button>
             
             <br/><br/>
             <a href="/settings" class="settings-link"><button>Settings</button></a>

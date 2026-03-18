@@ -14,6 +14,7 @@ class PoseGameEngine:
         self.pose_model = initialize_pose_model()
         self.label_map = {"X": 0, "Hide": 1, "Pose": 2, "Squat": 3, "Stand": 4}
         self.poses = list(self.label_map.keys())
+        self.selected_poses = list(self.label_map.keys())
         self.classifier = load_model("./model/model_strike_a_pose.h5")
         
         # Game State
@@ -24,22 +25,27 @@ class PoseGameEngine:
         self.rounds_left = 10
         self.count = 5
         self.points = 0
-        self.next_pose = random.choice(self.poses)
+        self.next_pose = random.choice(self.selected_poses)
         self.current_pose = None
         self.correct_pose = False
         self.incorrect_pose = False
         self.last_time_check = time.time()
         self.record_time = time.time()
-        
-        # Overlay settings
-        self.rect_top_left = (950, 20)
-        self.rect_bottom_right = (350, 700)
-        self.rect_color = (0, 255, 0)
-        self.rect_thickness = 4
+
+        # Visualization settings
+        self.show_landmarks = False
+        self.show_bbox = True
 
     def update_settings(self, rounds, countdown):
         self.rounds_total = rounds
         self.countdown_total = countdown
+
+    def update_poses(self, selected_poses):
+        self.selected_poses = selected_poses if selected_poses else list(self.label_map.keys())
+
+    def update_visual_settings(self, show_landmarks, show_bbox):
+        self.show_landmarks = show_landmarks
+        self.show_bbox = show_bbox
 
     def start_game(self):
         self.is_playing = True
@@ -47,13 +53,37 @@ class PoseGameEngine:
         self.rounds_left = self.rounds_total
         self.count = self.countdown_total
         self.points = 0
-        self.next_pose = random.choice(self.poses)
+        self.next_pose = random.choice(self.selected_poses)
         self.current_pose = None
+        self.correct_pose = False
+        self.incorrect_pose = False
         self.last_time_check = time.time()
-        
+
     def reset_game(self):
         self.is_playing = False
         self.is_game_over = False
+        self.correct_pose = False
+        self.incorrect_pose = False
+
+    def get_game_state(self):
+        """Return current game state as a dict for the frontend to consume."""
+        if self.is_game_over:
+            state = "game_over"
+        elif self.is_playing:
+            state = "playing"
+        else:
+            state = "idle"
+
+        return {
+            "state": state,
+            "rounds_left": self.rounds_left,
+            "rounds_total": self.rounds_total,
+            "countdown": self.count,
+            "next_pose": self.next_pose,
+            "points": self.points,
+            "correct_pose": self.correct_pose,
+            "incorrect_pose": self.incorrect_pose,
+        }
 
     def generate_video_feed(self):
         last_frame_id = 0
@@ -71,14 +101,12 @@ class PoseGameEngine:
                 continue
             last_frame_id = current_frame_id
 
-            # frame from videoplayer is RGB. Convert to BGR for cv2 processing/drawing
             frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
-            # Draw ROI rectangle
-            cv2.rectangle(frame_bgr, self.rect_top_left, self.rect_bottom_right, self.rect_color, self.rect_thickness)
-            
-            # process_frame handles drawing landmarks
-            results, frame_bgr = process_frame(frame_bgr, self.pose_model)
+            results, frame_bgr = process_frame(
+                frame_bgr, self.pose_model,
+                show_landmarks=self.show_landmarks,
+                show_bbox=self.show_bbox
+            )
             frame_bgr = cv2.flip(frame_bgr, 1)
 
             if self.is_playing and not self.is_game_over:
@@ -87,13 +115,6 @@ class PoseGameEngine:
                         frame_bgr, self.correct_pose = blink_screen(frame_bgr, 1, self.record_time, self.correct_pose)
                     elif self.incorrect_pose:
                         frame_bgr, self.incorrect_pose = blink_screen(frame_bgr, 2, self.record_time, self.incorrect_pose)
-
-                    text_playing = [
-                        {"text": f"Left: {self.rounds_left}", "position": (50, 100)},
-                        {"text": f"{self.next_pose.upper()}: {self.count} s", "position": (430, 100)},
-                    ]
-                    for data in text_playing:
-                        draw_bold_text(frame_bgr, data["text"], data["position"], color=(0, 0, 255))
 
                     if time.time() - self.last_time_check >= 1:
                         self.count -= 1
@@ -106,7 +127,7 @@ class PoseGameEngine:
                         self.rounds_left -= 1
 
                         while self.next_pose == self.current_pose:
-                            self.next_pose = random.choice(self.poses)
+                            self.next_pose = random.choice(self.selected_poses)
 
                         landmark_coords = extract_landmarks(results)
                         predicted_pose = predict_pose_v2(landmark_coords, self.label_map, self.classifier)
@@ -120,21 +141,8 @@ class PoseGameEngine:
                 elif self.rounds_left == 0:
                     self.is_game_over = True
                     self.is_playing = False
-
-            if self.is_game_over:
-                white_rect = np.zeros_like(frame_bgr) + 255
-                alpha = 0.5
-                frame_bgr = cv2.addWeighted(frame_bgr, 1 - alpha, white_rect, alpha, 0)
-                game_over_text = "GAME OVER!"
-                draw_bold_text(frame_bgr, game_over_text, (350, 100), font_scale=3, color=(0, 0, 255), thickness=3)
-                points_text = f"Points: {self.points}/{self.rounds_total}"
-                draw_bold_text(frame_bgr, points_text, (350, 250), font_scale=3, color=(255, 0, 0), thickness=3)
-
-            if not self.is_playing and not self.is_game_over:
-                white_rect = np.zeros_like(frame_bgr) + 255
-                alpha = 0.5
-                frame_bgr = cv2.addWeighted(frame_bgr, 1 - alpha, white_rect, alpha, 0)
-                draw_bold_text(frame_bgr, "READY to play", (400, 350), font_scale=3, color=(0, 0, 255), thickness=4)
+                    self.correct_pose = False
+                    self.incorrect_pose = False
 
             _, buffer = cv2.imencode(".jpg", frame_bgr, [cv2.IMWRITE_JPEG_QUALITY, 75])
             yield (b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buffer.tobytes() + b"\r\n")

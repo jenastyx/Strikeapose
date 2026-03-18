@@ -189,3 +189,4 @@ Please take a look at the documentation in `collect_data.py`, `train_model.ipynb
 I would like to thank Daniel Bärenbräuer for his outstanding project ["Live Sign Language Translator"](https://github.com/d-db/SPICED_Final_Project_Live_Sign_Language_Translator__LSTM_Neural_Network),  which served as a valuable source of inspiration for "STRIKE A POSE!".
 
 A special thanks to [alx-sch/STRIKE_A_POSE](https://github.com/alx-sch/STRIKE_A_POSE), as this project was heavily inspired by his project.
+    

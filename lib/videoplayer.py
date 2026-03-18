@@ -217,6 +217,9 @@ class VideoPlayer:
         self.stream_state = StreamState.IDLE
         self.last_error = None
 
+        # Store the current stream source for restart capability
+        self._current_stream_src = None
+
         log_info("Video Player initialised!")
 
     # -------- Public API ---------
@@ -245,6 +248,9 @@ class VideoPlayer:
             self.stream_state = StreamState.FAILED
             return None
 
+        # Store stream source for restart capability
+        self._current_stream_src = stream_src
+
         self.end_event = threading.Event()
         self.last_error = None
         self.stream_state = StreamState.STARTING
@@ -261,6 +267,39 @@ class VideoPlayer:
         self.current_frame = None 
         self.frame_id = 0 
         self.last_error = None
+
+    def update_resolution(self, new_width: int, new_height: int) -> None:
+        """
+        Updates the video resolution. If a stream is currently running,
+        it will be transparently restarted with the new resolution.
+        
+        Arguments
+        - new_width: new video width in pixels
+        - new_height: new video height in pixels
+        """
+        log_info(f"Updating resolution from {self.width}x{self.height} to {new_width}x{new_height}")
+
+        was_running = self.stream_state == StreamState.RUNNING
+        saved_src = self._current_stream_src
+
+        # Stop current stream if running
+        if was_running:
+            self.end_stream()
+            # Wait for thread to fully stop
+            if self.streamThread and self.streamThread.is_alive():
+                self.streamThread.join(timeout=2.0)
+
+        # Update dimensions
+        self.width = new_width
+        self.height = new_height
+        self.frame_size = self.width * self.height * 3
+
+        log_info(f"Resolution updated to {self.width}x{self.height}")
+
+        # Restart stream if it was running before
+        if was_running and saved_src:
+            log_info(f"Restarting stream at new resolution...")
+            self.start_stream(saved_src)
         
     def start_broadcast(self) -> Generator[bytes, any, any]:
         """
