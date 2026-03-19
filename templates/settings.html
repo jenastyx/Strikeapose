@@ -4,58 +4,171 @@
 <head>
     <meta charset="UTF-8">
     <title>Settings - STRIKE A POSE!</title>
-    <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="stylesheet" href="/static/css/app.css">
     <style>
-        /* ---- Toggle switch ---- */
+        /* --- Reset & body --- */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #242424;
+            color: #dddddd;
+            box-sizing: border-box;
+        }
+
+        /* --- Control panel --- */
+        #control-panel {
+            width: 90%;
+            max-width: 500px;
+            height: 90%;
+            max-height: 800px;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: rgba(36, 36, 36, 0.95);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+        }
+
+        /* --- Title --- */
+        .title {
+            text-align: center;
+            font-size: 3vw;
+            margin-bottom: 1em;
+        }
+
+        /* --- Form groups --- */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1em;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .control-group input,
+        .control-group select {
+            padding: 0.8em 1em;
+            border-radius: 6px;
+            border: none;
+            background: #444;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        /* --- Buttons --- */
+        button {
+            padding: 0.8em 1.5em;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 1em;
+        }
+
+        .primary-btn {
+            background-color: #00d06c;
+            color: #111;
+        }
+
+        .danger-btn {
+            background-color: #d04a4a;
+            color: #fff;
+            margin-left: 0.5em;
+        }
+
+        /* --- Pose chips --- */
+        .pose-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5em;
+        }
+
+        .pose-chip input[type="checkbox"] {
+            display: none;
+        }
+
+        .pose-chip label {
+            display: inline-block;
+            padding: 0.5em 1em;
+            border-radius: 20px;
+            border: 2px solid #555;
+            background: #2a2a2a;
+            color: #aaa;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pose-chip input[type="checkbox"]:checked+label {
+            background: #00d06c;
+            border-color: #00d06c;
+            color: #111;
+        }
+
+        /* --- Toggle switch --- */
         .toggle-group {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 10px 14px;
-            margin: 6px 0;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            align-items: center;
+            padding: 0.5em 1em;
             border-radius: 10px;
-            transition: background 0.2s ease, border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.04);
+            margin-bottom: 0.5em;
         }
-        .toggle-group:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
+
         .toggle-label {
             display: flex;
             flex-direction: column;
-            gap: 2px;
         }
+
         .toggle-label-text {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: #e0e0e0;
         }
+
         .toggle-label-desc {
             font-size: 0.75rem;
             color: #888;
         }
+
         .toggle-switch {
             position: relative;
-            width: 52px;
-            height: 28px;
+            width: 50px;
+            height: 26px;
             flex-shrink: 0;
         }
+
         .toggle-switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
+
         .toggle-slider {
             position: absolute;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: #3a3a3a;
             border: 2px solid #555;
-            border-radius: 28px;
+            border-radius: 26px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .toggle-slider:before {
             content: "";
             position: absolute;
@@ -68,123 +181,100 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
-        .toggle-switch input:checked + .toggle-slider {
+
+        .toggle-switch input:checked+.toggle-slider {
             background: #00d06c;
             border-color: #00d06c;
         }
-        .toggle-switch input:checked + .toggle-slider:before {
+
+        .toggle-switch input:checked+.toggle-slider:before {
             transform: translateX(24px);
             background: #fff;
             box-shadow: 0 1px 6px rgba(0, 208, 108, 0.4);
         }
-        .toggle-switch input:focus + .toggle-slider {
-            box-shadow: 0 0 0 3px rgba(0, 208, 108, 0.2);
-        }
 
-        /* ---- Section divider ---- */
-        .settings-section-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #666;
-            margin-top: 22px;
-            margin-bottom: 8px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        /* ---- Overlay warning ---- */
+        /* --- Overlay warnings --- */
         .overlay-warning {
+            font-size: 0.85rem;
+            color: #ff6b6b;
+            padding: 6px 10px;
+            margin-top: 6px;
+            border-radius: 8px;
             display: none;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            margin-top: 8px;
             background: rgba(208, 74, 74, 0.15);
             border: 1px solid rgba(208, 74, 74, 0.4);
-            border-radius: 10px;
-            color: #ff6b6b;
-            font-size: 0.85rem;
-            font-weight: 600;
-            animation: shake 0.4s ease;
         }
+
         .overlay-warning.show {
-            display: flex;
-        }
-       
-
-        /* Error highlight on toggle rows */
-        .toggle-group.error {
-            border-color: rgba(208, 74, 74, 0.5);
-        }
-
-        /* ---- Pose chips ---- */
-        .pose-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 4px;
-        }
-        .pose-chip input[type="checkbox"] {
-            display: none;
-        }
-        .pose-chip label {
-            display: inline-block;
-            padding: 8px 18px;
-            border-radius: 20px;
-            border: 2px solid #555;
-            background: #2a2a2a;
-            color: #aaa;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-        }
-        .pose-chip input[type="checkbox"]:checked + label {
-            background: #00d06c;
-            border-color: #00d06c;
-            color: #111;
-        }
-        .pose-chip label:hover {
-            border-color: #00d06c;
-            color: #ddd;
-        }
-        .pose-chip input[type="checkbox"]:checked + label:hover {
-            color: #111;
+            display: block;
+            animation: shake 0.4s ease;
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-6px); }
-            40% { transform: translateX(6px); }
-            60% { transform: translateX(-4px); }
-            80% { transform: translateX(4px); }
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-6px);
+            }
+
+            40% {
+                transform: translateX(6px);
+            }
+
+            60% {
+                transform: translateX(-4px);
+            }
+
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        /* --- Small screens --- */
+        @media (max-width: 480px) {
+            #control-panel {
+                width: 95%;
+                height: 95%;
+                padding: 15px;
+            }
+
+            .title {
+                font-size: 5vw;
+            }
+
+            .control-group input,
+            .control-group select {
+                font-size: 0.9rem;
+                padding: 0.6em;
+            }
+
+            button {
+                font-size: 0.9rem;
+                padding: 0.6em 1em;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div id="control-panel" style="width: 400px; margin: auto; margin-top: 100px;">
+    <div id="control-panel">
         <h1 class="title">Settings</h1>
         <form id="settings-form">
             <div class="control-group">
                 <label>Number of Rounds:</label>
-                <input type="number" name="rounds" value="{{ rounds }}" min="1" required
-                    style="padding:10px; border-radius:6px; background:#444; color:#fff; border:none;">
+                <input type="number" name="rounds" value="{{ rounds }}" min="1" required>
             </div>
 
-            <div class="control-group" style="margin-top: 15px;">
+            <div class="control-group">
                 <label>Countdown Time (secs):</label>
-                <input type="number" name="countdown" value="{{ countdown }}" min="1" required
-                    style="padding:10px; border-radius:6px; background:#444; color:#fff; border:none;">
+                <input type="number" name="countdown" value="{{ countdown }}" min="1" required>
             </div>
 
-            <div class="control-group" style="margin-top: 15px;">
+            <div class="control-group">
                 <label>Video Resolution:</label>
-                <select name="resolution"
-                    style="padding:10px; border-radius:6px; background:#444; color:#fff; border:none;">
+                <select name="resolution">
                     <option value="640x480" {% if resolution=='640x480' %}selected{% endif %}>640 x 480</option>
                     <option value="1280x720" {% if resolution=='1280x720' %}selected{% endif %}>1280 x 720</option>
                     <option value="1600x900" {% if resolution=='1600x900' %}selected{% endif %}>1600 x 900</option>
@@ -192,10 +282,8 @@
                 </select>
             </div>
 
-            <div class="settings-section-label">Pose Selection</div>
-
             <div class="control-group">
-                <label style="margin-bottom: 8px;">Active Poses (select at least 2):</label>
+                <div class="settings-section-label">Active Poses (select at least 2):</div>
                 <div class="pose-chips">
                     {% for pose in all_poses %}
                     <div class="pose-chip">
@@ -205,14 +293,10 @@
                     </div>
                     {% endfor %}
                 </div>
-                <div class="overlay-warning" id="pose-warning" style="margin-top: 10px;">
-                    <span>Please select at least 2 poses.</span>
-                </div>
+                <div class="overlay-warning" id="pose-warning">Please select at least 2 poses.</div>
             </div>
 
-            <div class="settings-section-label">Overlay Options</div>
-
-            <div class="toggle-group" id="toggle-landmarks">
+            <div class="toggle-group">
                 <div class="toggle-label">
                     <span class="toggle-label-text">Pose Landmarks</span>
                     <span class="toggle-label-desc">Show skeleton lines and joint dots</span>
@@ -223,7 +307,7 @@
                 </label>
             </div>
 
-            <div class="toggle-group" id="toggle-bbox">
+            <div class="toggle-group">
                 <div class="toggle-label">
                     <span class="toggle-label-text">Bounding Box</span>
                     <span class="toggle-label-desc">Show green box around detected person</span>
@@ -235,56 +319,40 @@
             </div>
 
             <div class="overlay-warning" id="overlay-warning">
-                <span>Please enable at least one overlay option.</span>
+                Please enable at least one overlay option.
             </div>
 
-            <br />
-            <button type="submit" class="primary-btn">Save Settings</button>
-            <a href="/" style="text-decoration: none;"><button type="button" class="danger-btn">Cancel</button></a>
+            <div style="display:flex; gap:10px;">
+                <button type="submit" class="primary-btn">Save Settings</button>
+                <a href="/"><button type="button" class="danger-btn">Cancel</button></a>
+            </div>
         </form>
         <div id="toast" class="toast"></div>
     </div>
+
     <script>
         const cbLandmarks = document.getElementById('cb-landmarks');
         const cbBbox = document.getElementById('cb-bbox');
-        const toggleLandmarks = document.getElementById('toggle-landmarks');
-        const toggleBbox = document.getElementById('toggle-bbox');
         const warning = document.getElementById('overlay-warning');
-
-        // Clear warning when a toggle is changed
-        cbLandmarks.addEventListener('change', clearWarning);
-        cbBbox.addEventListener('change', clearWarning);
-
-        function clearWarning() {
-            warning.classList.remove('show');
-        }
-
         const poseWarning = document.getElementById('pose-warning');
+
+        cbLandmarks.addEventListener('change', () => warning.classList.remove('show'));
+        cbBbox.addEventListener('change', () => warning.classList.remove('show'));
         document.querySelectorAll('input[name="poses"]').forEach(cb => {
             cb.addEventListener('change', () => poseWarning.classList.remove('show'));
         });
 
         document.getElementById('settings-form').addEventListener('submit', (e) => {
             e.preventDefault();
-
-            // Validate at least 2 poses selected
             const checkedPoses = document.querySelectorAll('input[name="poses"]:checked');
             if (checkedPoses.length < 2) {
-                poseWarning.classList.remove('show');
-                void poseWarning.offsetWidth;
                 poseWarning.classList.add('show');
                 return;
             }
-
-            // Validate at least one overlay is selected
             if (!cbLandmarks.checked && !cbBbox.checked) {
-                warning.classList.remove('show');
-                // Force reflow to retrigger animation
-                void warning.offsetWidth;
                 warning.classList.add('show');
                 return;
             }
-
             const fd = new FormData(e.target);
             fetch('/api/submit_settings', { method: 'POST', body: fd })
                 .then(res => res.json())
