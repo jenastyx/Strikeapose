@@ -33,13 +33,13 @@ from utils import (
 ##################
 
 # Name of poses that are recorded.
-POSES = ["stand", "squat", "X", "empty"]
+POSES = ["67"]
 
 # Time between recordings in seconds.
 COUNTDOWN = 5
 
 # Number of recordings per pose.
-RECORDINGS_PER_POSE = 10
+RECORDINGS_PER_POSE = 30
 
 # Folder / data path in which to save recorded data (extraxcted landmarks and annotated frames).
 SAVE_PATH = "training_data"
