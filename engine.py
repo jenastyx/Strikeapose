@@ -12,7 +12,7 @@ class PoseGameEngine:
     def __init__(self, videoplayer):
         self.videoplayer = videoplayer
         self.pose_model = initialize_pose_model()
-        self.label_map = {"X": 0, "Hide": 1, "Pose": 2, "Squat": 3, "Stand": 4}
+        self.label_map = {"67": 0, "X": 1, "Hide": 2, "Pose": 3, "Squat": 4, "Stand": 5}
         self.poses = list(self.label_map.keys())
         self.selected_poses = list(self.label_map.keys())
         self.classifier = load_model("./model/model_strike_a_pose.h5")
